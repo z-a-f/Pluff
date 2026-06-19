@@ -42,3 +42,6 @@ The relay accepts:
 The relay rejects malformed identities and invalid prekey signatures. Mutating
 and inbox routes require signed request headers once the DID is registered.
 
+During local debugging the relay can run with an in-memory store or a Postgres
+store selected by `DATABASE_URL`. App start and stop commands are documented in
+[development.md](development.md).

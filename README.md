@@ -35,19 +35,47 @@ packages/
 This repo uses `pnpm` workspaces.
 
 ```sh
+nvm use
 pnpm install
 pnpm test
 pnpm build
 ```
 
-For local relay persistence:
+Start the in-memory relay and web app in separate terminals:
 
 ```sh
-docker compose up -d postgres
-pnpm --filter @nonomessage/relay dev
+pnpm dev:relay
+pnpm dev:web
 ```
 
-The relay defaults to the in-memory store unless `DATABASE_URL` is set.
+Then open `http://localhost:5173/`. The web app defaults to
+`http://localhost:8787` for the relay.
+
+Stop app dev servers with `Ctrl-C` in the terminal where each command is
+running. If a detached process is left behind while debugging, find it with:
+
+```sh
+pgrep -af '[v]ite|[t]sx src/main.ts'
+```
+
+Then stop the specific PID with `kill <pid>`.
+
+For local relay persistence with Postgres:
+
+```sh
+pnpm dev:postgres
+export DATABASE_URL=postgres://nonomessage:nonomessage@localhost:5432/nonomessage
+pnpm dev:relay
+```
+
+Stop Postgres with:
+
+```sh
+pnpm stop:postgres
+```
+
+The relay defaults to the in-memory store unless `DATABASE_URL` is set. More
+debugging notes are in [docs/development.md](docs/development.md).
 
 ## Security model
 
@@ -71,4 +99,3 @@ implementation and has not been independently audited.
 Relay storage must contain only public identity material, public prekeys, and
 encrypted envelopes. Tests assert that agent payload fields do not appear in the
 stored envelope records.
-
