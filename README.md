@@ -77,6 +77,17 @@ pnpm stop:postgres
 The relay defaults to the in-memory store unless `DATABASE_URL` is set. More
 debugging notes are in [docs/development.md](docs/development.md).
 
+## Publish
+
+Publish packages in a strict order:
+
+```sh
+pnpm -r build
+pnpm --filter @murmu/protocol publish
+pnpm --filter @murmu/client publish
+pnpm --filter @murmu/mcp publish
+```
+
 ## Security model
 
 The relay is intentionally not trusted with message plaintext or private keys.
