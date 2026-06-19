@@ -1,10 +1,21 @@
 {
   "name": "@pluff/mcp",
   "version": "0.1.0",
+  "description": "Model Context Protocol server for Pluff",
+  "license": "Apache-2.0",
+  "author": "z-a-f",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z-a-f/Pluff.git",
+    "directory": "apps/mcp"
+  },
   "type": "module",
   "bin": {
     "pluff-mcp": "./dist/server.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx src/server.ts",
@@ -20,5 +31,16 @@
     "tsx": "^4.19.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   }
 }

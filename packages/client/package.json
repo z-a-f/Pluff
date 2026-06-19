@@ -1,9 +1,20 @@
 {
   "name": "@pluff/client",
   "version": "0.1.0",
+  "description": "Client library for Pluff",
+  "license": "Apache-2.0",
+  "author": "z-a-f",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z-a-f/Pluff.git",
+    "directory": "packages/client"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -21,5 +32,8 @@
   "devDependencies": {
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

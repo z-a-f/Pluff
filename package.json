@@ -1,5 +1,6 @@
 {
   "name": "pluff",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "packageManager": "pnpm@11.8.0",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { createInterface } from "node:readline";
 import { PluffTools, toolDefinitions } from "./tools.js";
 
