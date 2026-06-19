@@ -1,7 +1,6 @@
 {
   "name": "@pluff/mcp",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "bin": {
     "pluff-mcp": "./dist/server.js"
