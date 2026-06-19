@@ -390,6 +390,49 @@ export function publicIdentity(identity: LocalIdentity): PublicIdentity {
   return publicPart;
 }
 
+const MAX_CIPHERTEXT_BYTES = 256 * 1024;
+
+export function assertEncryptedEnvelope(envelope: EncryptedEnvelope): void {
+  if (!envelope || typeof envelope !== "object") {
+    throw new Error("Invalid envelope");
+  }
+  if (
+    envelope.protocolVersion !== PROTOCOL_VERSION ||
+    envelope.cipherSuite !== CIPHER_SUITE
+  ) {
+    throw new Error("Unsupported envelope version or cipher suite");
+  }
+  const requiredStrings: Array<keyof EncryptedEnvelope> = [
+    "id",
+    "senderDid",
+    "recipientDid",
+    "createdAt",
+    "sessionId",
+    "ephemeralAgreementPublicKey",
+    "kemCiphertext",
+    "nonce",
+    "ciphertext",
+  ];
+  for (const field of requiredStrings) {
+    const value = envelope[field];
+    if (typeof value !== "string" || value.length === 0) {
+      throw new Error(`Invalid envelope field: ${field}`);
+    }
+  }
+  if (!envelope.preKeyIds || typeof envelope.preKeyIds.signedPreKeyId !== "string") {
+    throw new Error("Invalid envelope prekey ids");
+  }
+  // base64url fields must decode (canonically); the nonce must be a 96-bit IV.
+  if (base64UrlToBytes(envelope.nonce).length !== 12) {
+    throw new Error("Invalid envelope nonce length");
+  }
+  base64UrlToBytes(envelope.ephemeralAgreementPublicKey);
+  base64UrlToBytes(envelope.kemCiphertext);
+  if (base64UrlToBytes(envelope.ciphertext).length > MAX_CIPHERTEXT_BYTES) {
+    throw new Error("Envelope ciphertext exceeds maximum size");
+  }
+}
+
 export async function encryptAgentMessage(input: {
   sender: LocalIdentity;
   recipient: PreKeyClaim;

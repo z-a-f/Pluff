@@ -85,7 +85,13 @@ export function base64UrlToBytes(value: string): Uint8Array {
     }
   }
 
-  return new Uint8Array(bytes);
+  const result = new Uint8Array(bytes);
+  // Reject non-canonical encodings (e.g. non-zero trailing bits) so a value has
+  // exactly one valid string form. This removes a malleability surface.
+  if (bytesToBase64Url(result) !== clean) {
+    throw new Error("Non-canonical base64url encoding");
+  }
+  return result;
 }
 
 export function bytesToBase58Btc(bytes: Uint8Array): string {

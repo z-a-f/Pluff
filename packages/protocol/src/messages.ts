@@ -16,10 +16,35 @@ export function createAgentMessage(
   };
 }
 
+const ALLOWED_KINDS = new Set<AgentMessageKind>([
+  "task",
+  "status",
+  "tool_request",
+  "tool_result",
+  "note",
+]);
+
 export function assertAgentMessage(value: AgentMessage): void {
-  const allowed = new Set(["task", "status", "tool_request", "tool_result", "note"]);
-  if (!value.id || !allowed.has(value.kind) || !value.createdAt || !value.body) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error("Invalid agent message");
+  }
+  if (typeof value.id !== "string" || value.id.length === 0) {
+    throw new Error("Invalid agent message: id");
+  }
+  if (!ALLOWED_KINDS.has(value.kind)) {
+    throw new Error("Invalid agent message: kind");
+  }
+  if (typeof value.createdAt !== "string" || value.createdAt.length === 0) {
+    throw new Error("Invalid agent message: createdAt");
+  }
+  if (!value.body || typeof value.body !== "object" || Array.isArray(value.body)) {
+    throw new Error("Invalid agent message: body");
+  }
+  if (value.replyTo !== undefined && typeof value.replyTo !== "string") {
+    throw new Error("Invalid agent message: replyTo");
+  }
+  if (value.threadId !== undefined && typeof value.threadId !== "string") {
+    throw new Error("Invalid agent message: threadId");
   }
 }
 
