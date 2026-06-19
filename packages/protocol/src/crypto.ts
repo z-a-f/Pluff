@@ -212,12 +212,42 @@ function toBufferSource(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
   return new Uint8Array(bytes) as Uint8Array<ArrayBuffer>;
 }
 
-function deriveMessageKey(inputKeyMaterial: Uint8Array): Uint8Array {
+interface KdfTranscript {
+  senderDid: string;
+  recipientDid: string;
+  senderAgreementPublicKey: string;
+  recipientAgreementPublicKey: string;
+  signedPreKeyId: string;
+  oneTimePreKeyId?: string;
+  ephemeralAgreementPublicKey: string;
+  kemCiphertext: string;
+}
+
+function deriveMessageKey(
+  inputKeyMaterial: Uint8Array,
+  transcript: KdfTranscript,
+): Uint8Array {
+  // Bind the full handshake transcript into the KDF info so the derived key is
+  // tied to the exact parties, prekeys, ephemeral key, and KEM ciphertext used.
+  const info = utf8ToBytes(
+    canonicalJson({
+      domain: "nonomessage.pqxdh.kdf.v1",
+      cipherSuite: CIPHER_SUITE,
+      senderDid: transcript.senderDid,
+      recipientDid: transcript.recipientDid,
+      senderAgreementPublicKey: transcript.senderAgreementPublicKey,
+      recipientAgreementPublicKey: transcript.recipientAgreementPublicKey,
+      signedPreKeyId: transcript.signedPreKeyId,
+      oneTimePreKeyId: transcript.oneTimePreKeyId,
+      ephemeralAgreementPublicKey: transcript.ephemeralAgreementPublicKey,
+      kemCiphertext: transcript.kemCiphertext,
+    }),
+  );
   return hkdf(
     sha512,
     inputKeyMaterial,
     utf8ToBytes("nonomessage.pqxdh.v1.salt"),
-    utf8ToBytes(CIPHER_SUITE),
+    info,
     32,
   );
 }
@@ -409,7 +439,18 @@ export async function encryptAgentMessage(input: {
     );
   }
 
-  const messageKey = deriveMessageKey(concatBytes(...dhParts, kem.sharedSecret));
+  const ephemeralAgreementPublicKey = bytesToBase64Url(ephemeralPublicKey);
+  const kemCiphertext = bytesToBase64Url(kem.ciphertext);
+  const messageKey = deriveMessageKey(concatBytes(...dhParts, kem.sharedSecret), {
+    senderDid: input.sender.did,
+    recipientDid: input.recipient.identity.did,
+    senderAgreementPublicKey: input.sender.agreementPublicKey,
+    recipientAgreementPublicKey: input.recipient.identity.agreementPublicKey,
+    signedPreKeyId: input.recipient.signedPreKey.id,
+    oneTimePreKeyId: input.recipient.oneTimePreKey?.id,
+    ephemeralAgreementPublicKey,
+    kemCiphertext,
+  });
   const nonce = randomBytes(12);
   const baseEnvelope: Omit<EncryptedEnvelope, "associatedData" | "ciphertext"> = {
     id: idWithPrefix("env"),
@@ -427,8 +468,8 @@ export async function encryptAgentMessage(input: {
       signedPreKeyId: input.recipient.signedPreKey.id,
       oneTimePreKeyId: input.recipient.oneTimePreKey?.id,
     },
-    ephemeralAgreementPublicKey: bytesToBase64Url(ephemeralPublicKey),
-    kemCiphertext: bytesToBase64Url(kem.ciphertext),
+    ephemeralAgreementPublicKey,
+    kemCiphertext,
     nonce: bytesToBase64Url(nonce),
   };
   const aad = associatedDataFor(baseEnvelope);
@@ -509,7 +550,16 @@ export async function decryptAgentMessage(
     keyBytes(envelope.kemCiphertext),
     keyBytes(selectedKemSecretKey),
   );
-  const messageKey = deriveMessageKey(concatBytes(...dhParts, kemSharedSecret));
+  const messageKey = deriveMessageKey(concatBytes(...dhParts, kemSharedSecret), {
+    senderDid: envelope.senderDid,
+    recipientDid: envelope.recipientDid,
+    senderAgreementPublicKey: material.senderIdentity.agreementPublicKey,
+    recipientAgreementPublicKey: material.identity.agreementPublicKey,
+    signedPreKeyId: envelope.preKeyIds.signedPreKeyId,
+    oneTimePreKeyId: envelope.preKeyIds.oneTimePreKeyId,
+    ephemeralAgreementPublicKey: envelope.ephemeralAgreementPublicKey,
+    kemCiphertext: envelope.kemCiphertext,
+  });
   const plaintext = await aesGcmDecrypt(
     messageKey,
     keyBytes(envelope.nonce),
