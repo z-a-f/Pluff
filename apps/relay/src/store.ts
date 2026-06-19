@@ -70,6 +70,12 @@ export class MemoryRelayStore implements RelayStore {
     if (!this.bundles.has(envelope.recipientDid)) {
       throw new Error("Recipient identity is unknown");
     }
+    // Idempotent insert: never overwrite an existing id, so a re-submitted
+    // envelope cannot resurrect an already-acked record and be redelivered.
+    // Matches the Postgres store's `on conflict (id) do nothing`.
+    if (this.envelopes.has(envelope.id)) {
+      return;
+    }
     this.envelopes.set(envelope.id, {
       id: envelope.id,
       senderDid: envelope.senderDid,

@@ -1,11 +1,14 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import {
+  assertEncryptedEnvelope,
   assertPreKeyBundle,
   verifyRelayRequest,
   type EncryptedEnvelope,
   type PreKeyBundle,
 } from "@nonomessage/protocol";
 import type { RelayStore } from "./store.js";
+
+const MAX_BODY_BYTES = 1024 * 1024;
 
 export function createRelayServer(store: RelayStore) {
   return createServer(async (request, response) => {
@@ -75,6 +78,7 @@ async function handleRequest(
 
   if (method === "POST" && url.pathname === "/v1/envelopes") {
     const envelope = body as EncryptedEnvelope;
+    assertEncryptedEnvelope(envelope);
     await requireAuth(store, request, method, path, bodyText, envelope.senderDid);
     await store.insertEnvelope(envelope);
     sendJson(response, 201, { id: envelope.id });
@@ -137,8 +141,14 @@ function sendJson(response: ServerResponse, status: number, value: unknown): voi
 
 async function readBody(request: IncomingMessage): Promise<string> {
   const chunks: Uint8Array[] = [];
+  let total = 0;
   for await (const chunk of request) {
-    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+    const buffer = typeof chunk === "string" ? Buffer.from(chunk) : chunk;
+    total += buffer.length;
+    if (total > MAX_BODY_BYTES) {
+      throw new Error("Request body too large");
+    }
+    chunks.push(buffer);
   }
   return Buffer.concat(chunks).toString("utf8");
 }
