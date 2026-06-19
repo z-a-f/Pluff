@@ -1,22 +1,26 @@
 {
-  "name": "nonomessage",
+  "name": "pluff",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "build": "pnpm -r build",
-    "dev:mcp": "pnpm --filter @nonomessage/mcp dev",
+    "dev:mcp": "pnpm --filter @pluff/mcp dev",
     "dev:postgres": "docker compose up -d postgres",
-    "dev:relay": "pnpm --filter @nonomessage/relay dev",
-    "dev:web": "pnpm --filter @nonomessage/web dev",
+    "dev:relay": "pnpm --filter @pluff/relay dev",
+    "dev:web": "pnpm --filter @pluff/web dev",
     "stop:postgres": "docker compose stop postgres",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "@types/node": "^25.9.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=11"
   }
 }

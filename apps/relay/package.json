@@ -1,5 +1,5 @@
 {
-  "name": "@nonomessage/relay",
+  "name": "@pluff/relay",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,14 +12,15 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@nonomessage/protocol": "workspace:*",
+    "@pluff/protocol": "workspace:*",
     "pg": "^8.13.1"
   },
   "devDependencies": {
-    "@nonomessage/client": "workspace:*",
+    "@pluff/client": "workspace:*",
+    "@types/node": "^25.9.3",
     "@types/pg": "^8.11.10",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

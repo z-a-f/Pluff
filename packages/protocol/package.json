@@ -1,5 +1,5 @@
 {
-  "name": "@nonomessage/protocol",
+  "name": "@pluff/protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -22,7 +22,7 @@
     "@noble/post-quantum": "^0.4.1"
   },
   "devDependencies": {
-    "vitest": "^2.1.8",
-    "typescript": "^5.7.2"
+    "vitest": "^4.1.9",
+    "typescript": "^6.0.3"
   }
 }

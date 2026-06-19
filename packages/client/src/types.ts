@@ -6,7 +6,7 @@ import type {
   PreKeyBundle,
   PreKeyClaim,
   PublicIdentity,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 
 export interface RelayClientOptions {
   baseUrl: string;

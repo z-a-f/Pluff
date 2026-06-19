@@ -1,5 +1,5 @@
 {
-  "name": "@nonomessage/client",
+  "name": "@pluff/client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,10 +17,10 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@nonomessage/protocol": "workspace:*"
+    "@pluff/protocol": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

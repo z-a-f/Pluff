@@ -57,8 +57,8 @@ The relay stores the encrypted envelope:
 
 ```json
 {
-  "protocolVersion": "nonomessage.e2ee.v1",
-  "cipherSuite": "NNM-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1",
+  "protocolVersion": "pluff.e2ee.v1",
+  "cipherSuite": "PLUFF-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1",
   "senderDid": "did:key:...",
   "recipientDid": "did:key:...",
   "preKeyIds": {
@@ -81,10 +81,10 @@ is never sent to or stored by the relay.
 Authenticated relay requests are signed by the caller's identity key and carry
 these headers:
 
-- `x-nnm-did` — the caller DID
-- `x-nnm-timestamp` — ISO-8601 time (rejected outside a clock-skew window)
-- `x-nnm-nonce` — a random per-request value (rejected if reused within the
+- `x-pluff-did` — the caller DID
+- `x-pluff-timestamp` — ISO-8601 time (rejected outside a clock-skew window)
+- `x-pluff-nonce` — a random per-request value (rejected if reused within the
   window) to prevent replay
-- `x-nnm-signature` — Ed25519 signature over the method, path, timestamp, nonce,
+- `x-pluff-signature` — Ed25519 signature over the method, path, timestamp, nonce,
   and a hash of the body
 

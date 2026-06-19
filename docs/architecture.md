@@ -1,6 +1,6 @@
 # Architecture
 
-NoNoMessage has four trust boundaries:
+Pluff has four trust boundaries:
 
 1. Local identity storage holds private signing, agreement, and KEM keys.
 2. The protocol package creates and opens encrypted envelopes.

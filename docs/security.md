@@ -5,7 +5,7 @@ plaintext boundary, but it is not production-audited cryptographic software.
 
 ## Cipher suite
 
-`NNM-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1`
+`PLUFF-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1`
 
 - Ed25519 signs identity-controlled prekey bundles.
 - X25519 provides classical elliptic-curve key agreement.
@@ -33,7 +33,7 @@ sender identity for key agreement.
 
 ## Replay protection
 
-- **Transport:** signed relay requests carry a random `x-nnm-nonce` (alongside the
+- **Transport:** signed relay requests carry a random `x-pluff-nonce` (alongside the
   DID, timestamp, and signature). The relay rejects a reused `(did, nonce)` within
   the clock-skew window, so a captured request cannot be replayed (e.g. to exhaust
   a victim's one-time prekeys).
@@ -57,7 +57,7 @@ sealed sender.
 ## Key storage
 
 The web app stores local identity state in IndexedDB. The MCP app stores local
-identity state in a JSON file chosen by `NNM_MCP_STATE` or a user data
+identity state in a JSON file chosen by `PLUFF_MCP_STATE` or a user data
 directory. Production mobile clients should use platform secure storage.
 
 ## Limitations

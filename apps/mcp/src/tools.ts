@@ -2,7 +2,7 @@ import {
   RelayClient,
   createPreKeyBundle,
   type LocalAccount,
-} from "@nonomessage/client";
+} from "@pluff/client";
 import {
   decryptAgentMessage,
   encryptAgentMessage,
@@ -13,7 +13,7 @@ import {
   createAgentMessage,
   type AgentMessageKind,
   type JsonObject,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 import { McpStateStore } from "./state.js";
 
 export interface McpToolDefinition {
@@ -29,7 +29,7 @@ export interface McpToolDefinition {
 export const toolDefinitions: McpToolDefinition[] = [
   {
     name: "create_identity",
-    description: "Create a local NoNoMessage person or agent identity.",
+    description: "Create a local Pluff person or agent identity.",
     inputSchema: {
       type: "object",
       properties: {
@@ -110,7 +110,7 @@ export const toolDefinitions: McpToolDefinition[] = [
   },
 ];
 
-export class NoNoMessageTools {
+export class PluffTools {
   constructor(private readonly state = new McpStateStore()) {}
 
   async call(name: string, args: Record<string, unknown>): Promise<unknown> {

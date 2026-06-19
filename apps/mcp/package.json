@@ -1,10 +1,10 @@
 {
-  "name": "@nonomessage/mcp",
+  "name": "@pluff/mcp",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "bin": {
-    "nonomessage-mcp": "./dist/server.js"
+    "pluff-mcp": "./dist/server.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -13,12 +13,13 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@nonomessage/client": "workspace:*",
-    "@nonomessage/protocol": "workspace:*"
+    "@pluff/client": "workspace:*",
+    "@pluff/protocol": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^25.9.3",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

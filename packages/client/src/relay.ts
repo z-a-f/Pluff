@@ -10,7 +10,7 @@ import {
   type PreKeyBundle,
   type PreKeyClaim,
   type PublicIdentity,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 import type {
   RegistrationResult,
   RelayClientOptions,

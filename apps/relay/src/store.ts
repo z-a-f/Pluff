@@ -3,7 +3,7 @@ import {
   type EncryptedEnvelope,
   type PreKeyBundle,
   type PreKeyClaim,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 
 export interface StoredEnvelope {
   id: string;

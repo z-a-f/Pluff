@@ -1,5 +1,5 @@
 import { createInterface } from "node:readline";
-import { NoNoMessageTools, toolDefinitions } from "./tools.js";
+import { PluffTools, toolDefinitions } from "./tools.js";
 
 interface JsonRpcRequest {
   jsonrpc: "2.0";
@@ -8,7 +8,7 @@ interface JsonRpcRequest {
   params?: Record<string, unknown>;
 }
 
-const tools = new NoNoMessageTools();
+const tools = new PluffTools();
 
 const lines = createInterface({
   input: process.stdin,
@@ -58,7 +58,7 @@ async function handle(request: JsonRpcRequest): Promise<unknown> {
       return {
         protocolVersion: "2024-11-05",
         capabilities: { tools: {} },
-        serverInfo: { name: "nonomessage-mcp", version: "0.1.0" },
+        serverInfo: { name: "pluff-mcp", version: "0.1.0" },
       };
     case "tools/list":
       return { tools: toolDefinitions };

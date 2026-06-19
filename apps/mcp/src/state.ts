@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
-import type { LocalAccount } from "@nonomessage/client";
-import type { PublicIdentity } from "@nonomessage/protocol";
+import type { LocalAccount } from "@pluff/client";
+import type { PublicIdentity } from "@pluff/protocol";
 
 interface McpStateData {
   accounts: Record<string, LocalAccount>;
@@ -55,10 +55,10 @@ export class McpStateStore {
 }
 
 function defaultStatePath(): string {
-  if (process.env.NNM_MCP_STATE) {
-    return process.env.NNM_MCP_STATE;
+  if (process.env.PLUFF_MCP_STATE) {
+    return process.env.PLUFF_MCP_STATE;
   }
   const dataHome = process.env.XDG_DATA_HOME ?? join(homedir(), ".local", "share");
-  return join(dataHome, "nonomessage", "mcp-state.json");
+  return join(dataHome, "pluff", "mcp-state.json");
 }
 

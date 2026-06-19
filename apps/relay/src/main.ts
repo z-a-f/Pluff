@@ -2,7 +2,7 @@ import { createRelayServer } from "./server.js";
 import { MemoryRelayStore } from "./store.js";
 import { PostgresRelayStore } from "./postgres-store.js";
 
-const port = Number(process.env.NNM_RELAY_PORT ?? 8787);
+const port = Number(process.env.PLUFF_RELAY_PORT ?? 8787);
 const databaseUrl = process.env.DATABASE_URL;
 
 const store = databaseUrl
@@ -15,6 +15,6 @@ if (store instanceof PostgresRelayStore) {
 
 const server = createRelayServer(store);
 server.listen(port, () => {
-  console.log(`NoNoMessage relay listening on http://localhost:${port}`);
+  console.log(`Pluff relay listening on http://localhost:${port}`);
 });
 

@@ -1,6 +1,6 @@
-import type { LocalAccount } from "@nonomessage/client";
+import type { LocalAccount } from "@pluff/client";
 
-const DB_NAME = "nonomessage-web";
+const DB_NAME = "pluff-web";
 const DB_VERSION = 1;
 const ACCOUNTS = "accounts";
 

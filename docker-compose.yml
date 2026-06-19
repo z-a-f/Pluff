@@ -2,14 +2,14 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: nonomessage
-      POSTGRES_PASSWORD: nonomessage
-      POSTGRES_DB: nonomessage
+      POSTGRES_USER: pluff
+      POSTGRES_PASSWORD: pluff
+      POSTGRES_DB: pluff
     ports:
       - "5432:5432"
     volumes:
-      - nonomessage-postgres:/var/lib/postgresql/data
+      - pluff-postgres:/var/lib/postgresql/data
 
 volumes:
-  nonomessage-postgres:
+  pluff-postgres:
 

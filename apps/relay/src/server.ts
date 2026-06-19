@@ -5,7 +5,7 @@ import {
   verifyRelayRequest,
   type EncryptedEnvelope,
   type PreKeyBundle,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 import type { RelayStore } from "./store.js";
 
 const MAX_BODY_BYTES = 1024 * 1024;

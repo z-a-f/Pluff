@@ -1,7 +1,7 @@
-export const PROTOCOL_VERSION = "nonomessage.e2ee.v1";
+export const PROTOCOL_VERSION = "pluff.e2ee.v1";
 
 export const CIPHER_SUITE =
-  "NNM-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1";
+  "PLUFF-PQXDH-X25519-MLKEM768-ED25519-AES256GCM-HKDFSHA512-v1";
 
 export type Base64UrlString = string;
 

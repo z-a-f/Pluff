@@ -7,7 +7,7 @@ import {
   generateSignedPreKey,
   publicIdentity,
   type PreKeyClaim,
-} from "@nonomessage/protocol";
+} from "@pluff/protocol";
 import { MemoryRelayStore } from "../src/store.js";
 
 describe("relay privacy boundary", () => {
