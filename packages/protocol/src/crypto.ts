@@ -103,6 +103,32 @@ function preKeyPayload(
   );
 }
 
+function identityProofPayload(
+  identity: Pick<
+    PublicIdentity,
+    | "did"
+    | "kind"
+    | "bundleVersion"
+    | "signingPublicKey"
+    | "agreementPublicKey"
+    | "pqKemPublicKey"
+    | "createdAt"
+  >,
+): Uint8Array {
+  return utf8ToBytes(
+    canonicalJson({
+      domain: "nonomessage.identity.v1",
+      did: identity.did,
+      kind: identity.kind,
+      bundleVersion: identity.bundleVersion,
+      signingPublicKey: identity.signingPublicKey,
+      agreementPublicKey: identity.agreementPublicKey,
+      pqKemPublicKey: identity.pqKemPublicKey,
+      createdAt: identity.createdAt,
+    }),
+  );
+}
+
 function envelopeHeader(
   envelope: Omit<EncryptedEnvelope, "associatedData" | "ciphertext">,
 ): Record<string, unknown> {
@@ -206,17 +232,23 @@ export function generateIdentity(
   const agreementPublicKey = x25519.getPublicKey(agreementSecretKey);
   const pqKem = mlKemKeygen();
 
-  return {
+  const signingSecretKeyB64 = bytesToBase64Url(signingSecretKey);
+  const publicCore = {
     did: didKeyFromEd25519PublicKey(signingPublicKey),
     kind,
-    label: options.label,
-    bundleVersion: 1,
+    bundleVersion: 1 as const,
     signingPublicKey: bytesToBase64Url(signingPublicKey),
     agreementPublicKey: bytesToBase64Url(agreementPublicKey),
     pqKemPublicKey: bytesToBase64Url(pqKem.publicKey),
     createdAt: options.createdAt ?? new Date().toISOString(),
+  };
+
+  return {
+    ...publicCore,
+    label: options.label,
+    keyProof: signBytes(signingSecretKeyB64, identityProofPayload(publicCore)),
     private: {
-      signingSecretKey: bytesToBase64Url(signingSecretKey),
+      signingSecretKey: signingSecretKeyB64,
       agreementSecretKey: bytesToBase64Url(agreementSecretKey),
       pqKemSecretKey: bytesToBase64Url(pqKem.secretKey),
     },
@@ -228,6 +260,9 @@ export function assertPublicIdentity(identity: PublicIdentity): void {
     throw new Error("Unsupported identity bundle version");
   }
   assertDidMatchesSigningKey(identity.did, identity.signingPublicKey);
+  if (!verifyBytes(identity.signingPublicKey, identityProofPayload(identity), identity.keyProof)) {
+    throw new Error("Invalid identity key proof");
+  }
 }
 
 export function generateSignedPreKey(
@@ -414,6 +449,9 @@ export async function decryptAgentMessage(
   if (envelope.protocolVersion !== PROTOCOL_VERSION || envelope.cipherSuite !== CIPHER_SUITE) {
     throw new Error("Unsupported envelope version or cipher suite");
   }
+  // Verify the sender's agreement/KEM keys are bound to its DID before trusting
+  // them for key agreement; this is what defeats relay-driven sender spoofing.
+  assertPublicIdentity(material.senderIdentity);
   if (envelope.recipientDid !== material.identity.did) {
     throw new Error("Envelope recipient does not match local identity");
   }

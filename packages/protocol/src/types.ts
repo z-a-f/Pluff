@@ -39,6 +39,10 @@ export interface PublicIdentity {
   agreementPublicKey: Base64UrlString;
   pqKemPublicKey: Base64UrlString;
   createdAt: string;
+  // Ed25519 self-signature by the identity signing key over the DID and the
+  // agreement/KEM public keys. Binds those keys to the DID so an untrusted relay
+  // cannot swap them to impersonate a sender. See assertPublicIdentity.
+  keyProof: Base64UrlString;
 }
 
 export interface IdentityPrivateMaterial {
